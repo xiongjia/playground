@@ -1,0 +1,10 @@
+[package]
+name = "personal-automation-tools"
+version = "0.1.0"
+edition = "2024"
+description = "Personal automation toolkit"
+publish = false
+
+[dev-dependencies]
+just = "1"
+dprint = "0"
