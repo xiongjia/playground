@@ -1,0 +1,32 @@
+# ─── secrets & local config ──────────────────────────────────
+# Ignore all .env files anywhere, except .env.example
+.env*
+!.env.example
+!config/.env.example
+
+# ─── AI agent config ────────────────────────────────────────
+.pi/
+.claude/
+.cursor/
+
+# ─── drafts / planning notes (any dir) ──────────────────────
+*-draft.md
+
+# ─── OS ─────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── IDE ────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ─── Rust ─────────────────────────────────────────────────────
+target/
+Cargo.lock
+
+# ─── logs ───────────────────────────────────────────────────
+logs/
+*.log

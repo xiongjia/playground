@@ -1,0 +1,127 @@
+# ─── restic backup module ─────────────────────────────────────
+#
+# Prerequisites: restic (https://restic.net)
+# Config:         config/.env + config/.env.dev.local (loaded by root justfile)
+#   RESTIC_PASSWORD   — repository password
+#   RESTIC_REPOSITORY — repo URL (sftp:/s3:/b2: or local path)
+#   BACKUP_SOURCE_DIR — directory to back up
+#   BACKUP_TAG        — snapshot tag (set in config/.env)
+# Exclude rules:  .restic_exclude (in same dir as this justfile)
+#
+# Tags on every snapshot: <BACKUP_TAG>, host:<hostname>, path:<basename>
+# Retention: 7 daily + 4 weekly + 6 monthly
+#
+# Usage:  just backup::<task>
+#   e.g.  just backup::run        # daily backup
+#         just backup::list       # list snapshots
+#         just backup::restore ./out
+# ────────────────────────────────────────────────────────────
+
+EXCLUDE_FILE := justfile_directory() / "modules/backup" / ".restic_exclude"
+
+# ── env ────────────────────────────────────────────────────
+
+# Show config without modifying anything (safe way to verify .env)
+env:
+    @echo "═══ backup module environment ═══" && \
+    COUNT=$(echo "$BACKUP_SOURCE_DIR" | wc -w | tr -d ' ') && \
+    echo "BACKUP_PARENT      = ${BACKUP_PARENT:-(not set, use absolute paths)}" && \
+    echo "BACKUP_SOURCE_DIR = $BACKUP_SOURCE_DIR" && \
+    echo "  → $COUNT source director(ies)" && \
+    echo "BACKUP_TAG         = $BACKUP_TAG" && \
+    echo "HOSTNAME          = $HOSTNAME" && \
+    echo "RESTIC_REPOSITORY = $RESTIC_REPOSITORY" && \
+    if [ -n "$RESTIC_PASSWORD" ]; then \
+        echo "RESTIC_PASSWORD    = *** (${#RESTIC_PASSWORD} chars)"; \
+    else \
+        echo "RESTIC_PASSWORD    = (not set)"; \
+    fi
+
+# ── init ────────────────────────────────────────────────────
+
+# Initialize a new restic repository
+init:
+    restic init
+
+# ── daily workflow ──────────────────────────────────────────
+
+# Run backup + forget + prune (daily command)
+run:
+    @if [ -z "$BACKUP_SOURCE_DIR" ]; then echo "✗ BACKUP_SOURCE_DIR not set"; exit 1; fi && \
+    FIRST=$(echo "$BACKUP_SOURCE_DIR" | cut -d' ' -f1) && \
+    BASENAME=$(basename "$FIRST") && \
+    cd "${BACKUP_PARENT:-.}" && \
+    restic backup $BACKUP_SOURCE_DIR \
+        --tag "$BACKUP_TAG" \
+        --tag "host:$HOSTNAME" \
+        --tag "path:$BASENAME" \
+        --exclude-file '{{ EXCLUDE_FILE }}' && \
+    echo "✓ Backup done. Running forget + prune …" && \
+    restic forget \
+        --keep-daily 7 \
+        --keep-weekly 4 \
+        --keep-monthly 6 \
+        --prune \
+        --tag "$BACKUP_TAG"
+
+# Backup only, no cleanup
+run-only:
+    @if [ -z "$BACKUP_SOURCE_DIR" ]; then echo "✗ BACKUP_SOURCE_DIR not set"; exit 1; fi && \
+    FIRST=$(echo "$BACKUP_SOURCE_DIR" | cut -d' ' -f1) && \
+    BASENAME=$(basename "$FIRST") && \
+    cd "${BACKUP_PARENT:-.}" && \
+    restic backup $BACKUP_SOURCE_DIR \
+        --tag "$BACKUP_TAG" \
+        --tag "host:$HOSTNAME" \
+        --tag "path:$BASENAME" \
+        --exclude-file '{{ EXCLUDE_FILE }}'
+
+# ── snapshots ───────────────────────────────────────────────
+
+# List all snapshots
+list:
+    restic snapshots
+
+# Show latest backup stats (files, size, etc.)
+status:
+    restic stats latest
+
+# ── restore ─────────────────────────────────────────────────
+
+# Restore a snapshot to target directory (default: latest)
+restore target snapshot="latest":
+    restic restore {{ snapshot }} --target {{ target }}
+
+# ── cleanup ─────────────────────────────────────────────────
+
+# Apply retention policy (7d + 4w + 6m) and prune
+forget:
+    restic forget \
+        --keep-daily 7 \
+        --keep-weekly 4 \
+        --keep-monthly 6 \
+        --prune \
+        --tag "$BACKUP_TAG"
+
+# Preview what would be removed (dry-run)
+forget-dry-run:
+    restic forget \
+        --keep-daily 7 \
+        --keep-weekly 4 \
+        --keep-monthly 6 \
+        --dry-run \
+        --tag "$BACKUP_TAG"
+
+# Prune leftover data without forgetting
+prune:
+    restic prune
+
+# ── integrity ───────────────────────────────────────────────
+
+# Verify repository integrity
+check:
+    restic check
+
+# Check latest snapshot data (reads 5% of pack files)
+check-read-data:
+    restic check --read-data-subset=5%
