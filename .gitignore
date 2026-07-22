@@ -30,3 +30,16 @@ Cargo.lock
 # ─── logs ───────────────────────────────────────────────────
 logs/
 *.log
+
+# ─── Node.js / TypeScript ───────────────────────
+node_modules/
+dist/
+*.tsbuildinfo
+coverage/
+.eslintcache
+
+# ─── videodl ─────────────────────────────────────
+modules/videodl/pnpm-lock.yaml
+
+# Generated cookies (local only, never commit)
+modules/videodl/.cookies

@@ -8,3 +8,9 @@ publish = false
 [dev-dependencies]
 just = "1"
 dprint = "0"
+
+[dependencies]
+# 各模块共享的 CLI 工具依赖
+# 二进制入口在 src/bin/<tool-name>.rs，无 lib.rs
+tiny_http = "0.12"
+percent-encoding = "2"
