@@ -22,7 +22,7 @@ $VIDEO_DL_ROOT/
 ├── archive.txt              # Download archive (dedup)
 ├── index.html               # Browse page (generated)
 ├── player.html              # Player page (generated)
-├── .videodl-assets/         # (reserved)
+
 ├── channel/<Name>/<Date>-<Title>/
 ├── playlist/<Name>/<Date>-<Title>/
 └── single/<Date>-<Title>/
