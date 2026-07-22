@@ -2,10 +2,10 @@
 
 ## Modules
 
-| Module    | Description                  | Commands                                             |
-| --------- | ---------------------------- | ---------------------------------------------------- |
-| `backup`  | encrypted incremental backup | `just backup::run`, `just backup::list`, ...         |
-| `videodl` | yt-dlp video & subtitle mgr  | `just videodl::dl <url>`, `just videodl::serve`, ... |
+| Module    | Description                  | Commands                                                                              |
+| --------- | ---------------------------- | ------------------------------------------------------------------------------------- |
+| `backup`  | encrypted incremental backup | `just backup::run`, `just backup::list`, ...                                          |
+| `videodl` | yt-dlp video & subtitle mgr  | `just videodl::dl <url>`, `just videodl::serve`, `just videodl::dl-cookie <url>`, ... |
 
 See `modules/<name>/README.md` for module-specific usage.
 
