@@ -94,6 +94,10 @@ dl-sub-only url:
 dl-with-format format url:
     @{{ DL_SCRIPT }} --format "{{ format }}" "{{ url }}"
 
+# Download with browser cookies (extracts cookies every time)
+dl-cookie url:
+    @COOKIES_FROM=chrome {{ DL_SCRIPT }} "{{ url }}"
+
 # ── info ───────────────────────────────────────────────────
 
 # List available formats and subtitles

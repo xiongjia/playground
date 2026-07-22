@@ -22,7 +22,6 @@ $VIDEO_DL_ROOT/
 ├── archive.txt              # Download archive (dedup)
 ├── index.html               # Browse page (generated)
 ├── player.html              # Player page (generated)
-
 ├── channel/<Name>/<Date>-<Title>/
 ├── playlist/<Name>/<Date>-<Title>/
 └── single/<Date>-<Title>/
@@ -37,35 +36,30 @@ $VIDEO_DL_ROOT/
 ## Setup
 
 ```bash
-# 1. Configure
 cp config/.env.example config/.env        # set VIDEO_DL_ROOT
+just videodl::init                         # create dirs
 
-# 2. Init directory structure
-just videodl::init
-
-# 3. Export cookies from Chrome (required for YouTube)
-just videodl::cookies                     # saves to .cookies, auto-loaded
-
-# 4. Download a video
+# Pre-export cookies (no password prompt on subsequent downloads)
+just videodl::cookies
 just videodl::dl "https://youtube.com/watch?v=..."
 
-# 5. Generate HTML index and serve
+# Or live browser cookies (more reliable but prompts for password every time)
+just videodl::dl-cookie "https://youtube.com/watch?v=..."
+
 just videodl::gen-index
 just videodl::serve                        # http://localhost:8080
 ```
-
-> `just videodl::cookies` is a one-time step. It exports YouTube cookies from your browser to
-> `modules/videodl/.cookies` (gitignored). All subsequent downloads use this file automatically.
 
 ## Commands
 
 | Command                    | Description                                   |
 | -------------------------- | --------------------------------------------- |
-| `dl <url>`                 | Download (≤1080p)                             |
+| `dl <url>`                 | Download with pre-exported cookies            |
 | `dl-best <url>`            | Best quality                                  |
 | `dl-audio <url>`           | Audio only                                    |
 | `dl-sub-only <url>`        | Subtitles only                                |
 | `dl-with-format <f> <url>` | Custom format                                 |
+| `dl-cookie <url>`          | Download with live browser cookies            |
 | `list <url>`               | List formats/subtitles                        |
 | `info <url>`               | Show metadata                                 |
 | `env`                      | Show environment, paths, tool versions        |
