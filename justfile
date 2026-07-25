@@ -7,6 +7,7 @@ set dotenv-command := "cat config/.env config/.env.dev.local 2>/dev/null; true"
 mod backup "modules/backup"
 mod videodl "modules/videodl"
 mod notify "modules/notify"
+mod finance "modules/finance"
 
 # Build profile: 'release' (default) or 'debug'
 # Override:  profile=debug just build
@@ -67,6 +68,7 @@ fmt:
     just --fmt
     just --fmt --justfile modules/backup/justfile
     just --fmt --justfile modules/notify/justfile
+    just --fmt --justfile modules/finance/justfile
     dprint fmt
 
 # Check formatting (CI use)
@@ -74,4 +76,5 @@ fmt-check:
     just --fmt --check
     just --fmt --check --justfile modules/backup/justfile
     just --fmt --check --justfile modules/notify/justfile
+    just --fmt --check --justfile modules/finance/justfile
     dprint check
