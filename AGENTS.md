@@ -26,6 +26,7 @@ Modular personal automation repo. Each module in `modules/<name>/` has its own `
 | --------------- | ------ | ----------------------------------------- |
 | `just`          | Rust   | Task runner                               |
 | `dprint`        | Rust   | Formatter (md, json, ts)                  |
+| `uv`            | Rust   | Python package manager (finance module)   |
 | `yt-dlp`        | Python | Video download (CLI only, user-managed)   |
 | `notify`        | Rust   | Notification CLI (Telegram, watch, audit) |
 | `static-server` | Rust   | HTTP file server                          |
@@ -38,6 +39,7 @@ Rust tools in `src/bin/`. Build: `just build` (all, release), `just build-debug`
 - `modules/backup/README.md` — restic backup
 - `modules/videodl/README.md` — yt-dlp video & subtitle manager
 - `modules/notify/README.md` — notification CLI (Telegram, watch, audit log)
+- `modules/finance/README.md` — beancount + fava ledger toolkit (read-only)
 
 Module recipes use `::` separator (e.g. `just backup::run`). Run `just --list` for all.
 

@@ -1,0 +1,64 @@
+# ─── finance module — beancount + fava ──────────────────────
+#
+# Prerequisites: uv (https://docs.astral.sh/uv/getting-started/installation/)
+#   brew install uv          # macOS
+#   pipx install uv          # via pipx
+#   curl -LsSf ... | sh      # official installer (see docs)
+#
+# Config: config/.env (loaded by root justfile)
+#   FINANCE_BEANCOUNT_FILE  — path to main.beancount (external, required)
+#   FINANCE_FAVA_PORT       — fava server port (default: 5500)
+#   FINANCE_PROXY           — proxy for uv package downloads (optional)
+#
+# IMPORTANT:
+#   - main.beancount MUST be outside this repository (sensitive data)
+#   - All ledger operations are READ-ONLY
+#
+# Usage:  just finance::<task>
+#   e.g.  just finance::setup      # install / update dependencies
+#         just finance::check      # validate ledger
+#         just finance::query "balances at cost"
+#         just finance::serve      # start fava web UI
+# ────────────────────────────────────────────────────────────
+
+# Module directory — justfile_directory() returns root dir when loaded via `mod`
+MOD_DIR := justfile_directory() + "/modules/finance"
+
+# Fava server port (default: 5500)
+FAVA_PORT := env_var_or_default("FINANCE_FAVA_PORT", "5500")
+
+# Shell snippet to init proxy_flag based on FINANCE_PROXY env var
+[private]
+_PROXY_INIT := "proxy_flag=\"\"; if [ -n \"${FINANCE_PROXY:-}\" ]; then proxy_flag=\"--proxy $FINANCE_PROXY\"; fi &&"
+
+# ── setup ──────────────────────────────────────────────────
+
+# Install / update Python dependencies (run once after clone)
+setup:
+    @{{ _PROXY_INIT }} echo "📦 Installing beancount + fava (uv sync) ..." && uv sync $proxy_flag --directory '{{ MOD_DIR }}' && echo "✓ Dependencies ready"
+
+# ── check ──────────────────────────────────────────────────
+
+# Validate ledger syntax and balance
+check:
+    @{{ _PROXY_INIT }} if [ -z "${FINANCE_BEANCOUNT_FILE:-}" ]; then echo "✗ FINANCE_BEANCOUNT_FILE not set"; exit 1; fi && echo "🔍 Checking ledger: $FINANCE_BEANCOUNT_FILE" && uv run $proxy_flag --directory '{{ MOD_DIR }}' bean-check "$FINANCE_BEANCOUNT_FILE" && echo "✓ Ledger OK"
+
+# ── query ──────────────────────────────────────────────────
+
+# Run a Beancount Query Language query
+# Output is CSV with a header row — pipe through column for human-friendly display:
+# just finance::query "SELECT ..." | column -t -s ','
+query expr:
+    @{{ _PROXY_INIT }} if [ -z "${FINANCE_BEANCOUNT_FILE:-}" ]; then echo "✗ FINANCE_BEANCOUNT_FILE not set"; exit 1; fi && uv run $proxy_flag --directory '{{ MOD_DIR }}' bean-query --format csv "$FINANCE_BEANCOUNT_FILE" "{{ expr }}"
+
+# ── serve ──────────────────────────────────────────────────
+
+# Start fava web UI (Ctrl-C to stop)
+serve:
+    @{{ _PROXY_INIT }} if [ -z "${FINANCE_BEANCOUNT_FILE:-}" ]; then echo "✗ FINANCE_BEANCOUNT_FILE not set"; exit 1; fi && echo "🌐 Starting fava on http://127.0.0.1:{{ FAVA_PORT }} ..." && uv run $proxy_flag --directory '{{ MOD_DIR }}' fava --port '{{ FAVA_PORT }}' "$FINANCE_BEANCOUNT_FILE"
+
+# ── env ────────────────────────────────────────────────────
+
+# Show resolved finance environment
+env:
+    @echo "═══ finance module environment ═══" && echo "FINANCE_BEANCOUNT_FILE = ${FINANCE_BEANCOUNT_FILE:-(not set)}" && echo "FINANCE_FAVA_PORT      = ${FINANCE_FAVA_PORT:-5500}" && echo "FINANCE_PROXY          = ${FINANCE_PROXY:-(not set)}" && if [ -n "${FINANCE_BEANCOUNT_FILE:+x}" ]; then if [ -f "$FINANCE_BEANCOUNT_FILE" ]; then echo "  → ledger file exists ✓"; else echo "  → ledger file MISSING ✗"; fi; fi

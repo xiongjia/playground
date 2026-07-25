@@ -1,0 +1,9 @@
+[project]
+name = "finance-tools"
+version = "0.1.0"
+description = "Beancount + Fava toolchain for personal finance"
+requires-python = ">=3.12"
+dependencies = [
+    "beancount>=3,<4",
+    "fava>=1.28,<2",
+]
