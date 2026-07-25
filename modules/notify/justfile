@@ -1,0 +1,65 @@
+# ─── notify module ─────────────────────────────────────────
+#
+# CLI-based notification tool with Telegram bot support,
+# command-watch, audit log, and mock testing.
+#
+# Prerequisites: Rust toolchain
+# Config:        config/.env (loaded by root justfile)
+#   NOTIFY_TELEGRAM_BOT_TOKEN   — Telegram bot token
+#   NOTIFY_TELEGRAM_CHAT_ID     — recipient chat ID
+#   NOTIFY_TELEGRAM_PROXY       — proxy URL (optional)
+#   NOTIFY_DEFAULT_CHANNEL      — default channel (default: telegram)
+#   NOTIFY_LOG_FILE             — audit log path (optional)
+#   NOTIFY_TAIL_LINES           — output truncation (default: 30)
+#
+# Usage:  just notify::<task>
+#   e.g.  just notify::send "hello"
+#         just notify::watch --command "just backup::run"
+#         just notify::build
+#         just notify::test
+#         just notify::log list
+# ────────────────────────────────────────────────────────────
+
+# Build notify binary
+build:
+    @echo "🔨 Building notify ..." && \
+    cargo build --release --bin notify --quiet && \
+    echo "✓ notify ready"
+
+# Private build dependency
+_build:
+    @cargo build --release --bin notify --quiet
+
+# ── send ───────────────────────────────────────────────────
+
+# Send a notification
+send message *args: _build
+    @cargo run --release --bin notify -- send "{{ message }}" {{ args }}
+
+# ── watch ──────────────────────────────────────────────────
+
+# Run a command and send notification on completion
+watch cmd="" *args: _build
+    @if [ -n "{{ cmd }}" ]; then \
+        cargo run --release --bin notify -- watch --command "{{ cmd }}" {{ args }}; \
+    else \
+        cargo run --release --bin notify -- watch {{ args }}; \
+    fi
+
+# ── test ───────────────────────────────────────────────────
+
+# Test notification channels (dry-run, no real API calls)
+test *args: _build
+    @cargo run --release --bin notify -- test {{ args }}
+
+# ── log ────────────────────────────────────────────────────
+
+# Query notification audit log
+log *args: _build
+    @cargo run --release --bin notify -- log {{ args }}
+
+# ── env ────────────────────────────────────────────────────
+
+# Show resolved environment configuration
+env: _build
+    @cargo run --release --bin notify -- env

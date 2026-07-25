@@ -31,6 +31,9 @@ Cargo.lock
 logs/
 *.log
 
+# ─── notify ────────────────────────────────────
+modules/notify/notify.log
+
 # ─── Node.js / TypeScript ───────────────────────
 node_modules/
 dist/

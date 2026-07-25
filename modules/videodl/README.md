@@ -50,6 +50,20 @@ just videodl::gen-index
 just videodl::serve                        # http://localhost:8080
 ```
 
+## Build
+
+`static-server` (Rust HTTP server) is built automatically by `just videodl::serve`. To build
+explicitly:
+
+```bash
+# Build all Rust binaries (notify + static-server)
+just build
+
+# Build only static-server
+just build-static-server
+just videodl::build          # module-specific build
+```
+
 ## Commands
 
 | Command                    | Description                                   |
