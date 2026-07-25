@@ -46,3 +46,14 @@ modules/videodl/pnpm-lock.yaml
 
 # Generated cookies (local only, never commit)
 modules/videodl/.cookies
+
+# ─── Python / uv ─────────────────────────────────────
+__pycache__/
+*.pyc
+uv.lock
+
+# Python virtual environments (anywhere in the project)
+.venv/
+
+# Beancount ledger files (sensitive financial data, must stay outside repo)
+*.beancount
