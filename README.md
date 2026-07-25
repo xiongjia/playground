@@ -6,6 +6,7 @@
 | --------- | ---------------------------- | ------------------------------------------------------------------------------------- |
 | `backup`  | encrypted incremental backup | `just backup::run`, `just backup::list`, ...                                          |
 | `videodl` | yt-dlp video & subtitle mgr  | `just videodl::dl <url>`, `just videodl::serve`, `just videodl::dl-cookie <url>`, ... |
+| `notify`  | notification CLI             | `just notify::send "msg"`, `just notify::watch "cmd"`, `just notify::log list`, ...   |
 
 See `modules/<name>/README.md` for module-specific usage.
 
@@ -13,13 +14,14 @@ See `modules/<name>/README.md` for module-specific usage.
 
 ### Dependencies
 
-| Tool            | Version                | Source                                     |
-| --------------- | ---------------------- | ------------------------------------------ |
-| `just`          | pinned in `Cargo.toml` | `cargo install just`                       |
-| `dprint`        | pinned in `Cargo.toml` | `cargo install dprint`                     |
-| `restic`        | latest                 | [restic.net](https://restic.net)           |
-| `yt-dlp`        | latest                 | [yt-dlp](https://github.com/yt-dlp/yt-dlp) |
-| `static-server` | in `src/bin/`          | `cargo run --bin static-server`            |
+| Tool            | Version                | Source                                             |
+| --------------- | ---------------------- | -------------------------------------------------- |
+| `just`          | pinned in `Cargo.toml` | `cargo install just`                               |
+| `dprint`        | pinned in `Cargo.toml` | `cargo install dprint`                             |
+| `restic`        | latest                 | [restic.net](https://restic.net)                   |
+| `yt-dlp`        | latest                 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)         |
+| `notify`        | in `src/bin/`          | `just build-notify` / `just notify::build`         |
+| `static-server` | in `src/bin/`          | `just build-static-server` / `just videodl::build` |
 
 ## Quick Start
 
@@ -35,6 +37,11 @@ just videodl::cookies
 just videodl::dl "https://..."
 just videodl::gen-index
 just videodl::serve        # http://localhost:8080
+
+# notify
+just notify::send "Backup done" --level success
+just notify::watch "long-task.sh"
+just notify::log status
 ```
 
 ## Development
@@ -42,4 +49,7 @@ just videodl::serve        # http://localhost:8080
 ```bash
 just fmt        # format all files
 just fmt-check  # check formatting (CI gate)
+just build      # build all Rust binaries (release)
+just build-debug   # build all Rust binaries (debug)
+just test       # run all Rust tests
 ```

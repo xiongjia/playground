@@ -11,6 +11,13 @@ dprint = "0"
 
 [dependencies]
 # 各模块共享的 CLI 工具依赖
-# 二进制入口在 src/bin/<tool-name>.rs，无 lib.rs
+# 二进制入口在 src/bin/<tool-name>.rs 或 src/bin/<tool-name>/main.rs
 tiny_http = "0.12"
 percent-encoding = "2"
+
+# notify 模块
+clap = { version = "4", features = ["derive"] }
+ureq = "3"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = { version = "0.4", features = ["serde"] }
