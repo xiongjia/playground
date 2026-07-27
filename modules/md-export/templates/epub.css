@@ -1,0 +1,63 @@
+/* ── md-export EPUB styles ───────────────────────────── */
+/* Chinese-friendly typography for e-readers              */
+
+body {
+  font-family: "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+  line-height: 1.8;
+  text-align: justify;
+  word-spacing: 0.05em;
+}
+
+code {
+  font-family: "SF Mono", "Menlo", "Noto Sans Mono CJK SC", "Cascadia Code", monospace;
+  font-size: 0.85em;
+  background: #f0f0f0;
+  padding: 0.15em 0.3em;
+}
+
+pre {
+  background: #f5f5f5;
+  padding: 1em;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 0.85em;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+h1, h2, h3, h4 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+h1 { font-size: 1.6em; border-bottom: 1px solid #ddd; padding-bottom: 0.3em; }
+h2 { font-size: 1.4em; }
+
+a { color: #0366d6; text-decoration: none; }
+
+blockquote {
+  border-left: 3px solid #ccc;
+  margin-left: 0;
+  padding-left: 1em;
+  color: #666;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  font-size: 0.9em;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 0.5em;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
