@@ -50,6 +50,36 @@ just videodl::gen-index
 just videodl::serve                        # http://localhost:8080
 ```
 
+## Configuration
+
+All variables go in `config/.env`:
+
+| Variable         | Required | Default      | Description                                                |
+| ---------------- | -------- | ------------ | ---------------------------------------------------------- |
+| `VIDEO_DL_ROOT`  | Yes      | —            | Download root directory (videos, subtitles, index)         |
+| `SUBTITLE_LANGS` | No       | `en,zh-Hans` | Subtitle language priority, comma-separated                |
+| `VIDEO_DL_PROXY` | No       | —            | Dedicated proxy (won't interfere with other programs)      |
+| `COOKIES_FROM`   | No       | —            | Browser name for cookie export (`chrome`, `firefox`, etc.) |
+| `COOKIES_FILE`   | No       | —            | Explicit path to cookies.txt file                          |
+
+## Notifications
+
+Download commands send a Telegram notification on completion (success or failure) with runtime
+duration.
+
+**Commands with notifications:**
+
+| Command                          |     Notification     |
+| -------------------------------- | :------------------: |
+| `dl <url>`                       |          ✅          |
+| `dl-best <url>`                  |          ✅          |
+| `dl-audio <url>`                 |          ✅          |
+| `dl-cookie <url>`                |          ✅          |
+| `dl-with-format <f> <url>`       |          ✅          |
+| `list`, `info`, `archive`, `env` | — (instant commands) |
+
+Disable globally: `NOTIFY_SILENT=true` in `config/.env`.
+
 ## Build
 
 `static-server` (Rust HTTP server) is built automatically by `just videodl::serve`. To build

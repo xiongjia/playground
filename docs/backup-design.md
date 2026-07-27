@@ -158,7 +158,32 @@ Each backend needs `restic init` once. For simultaneous multi-destination, use r
 
 ---
 
-## 9. Automation (Future)
+## 9. Notifications
+
+`just backup::run` automatically sends a notification on completion via `modules/notify`.
+
+**Notification behavior:**
+
+| Trigger        | Channel           | Message                                                                         |
+| -------------- | ----------------- | ------------------------------------------------------------------------------- |
+| Backup success | Telegram / Stdout | `✅ backup::run succeeded (took: 2m15s · restic forget: removed 3 snapshots)`   |
+| Backup failure | Telegram / Stdout | `❌ backup::run failed (took: 0m45s, exit code: 2 · ERROR: connection refused)` |
+
+**Control:**
+
+- `NOTIFY_SILENT=true` in `config/.env` — disable all notifications globally
+- Use `just notify::test` to verify notification channels work
+
+**Implementation:**
+
+The backup command is wrapped by `modules/notify/scripts/run-and-notify.sh`, which measures runtime
+(via `date +%s`), captures the exit code, captures the last line of stdout as a result summary, and
+calls `notify send --level success/error` with the result. The original exit code is preserved so
+`&&` chains (backup → forget) work correctly.
+
+---
+
+## 10. Automation (Future)
 
 - `launchd` / `cron` daily trigger: `just backup::run`
 - `Healthchecks.io` ping after successful backup for alerting on failure

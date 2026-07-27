@@ -100,5 +100,7 @@ Additional tools are module-specific and documented in each module's README.
 ## 6. Future Considerations
 
 - **CI**: GitHub Actions could run `backup check` on schedule or alert on stale snapshots
-- **Notifications**: Module hooks for macOS notification / Healthchecks.io / ntfy after backup
+- **Notifications**: Long-running commands (backup, export, download) automatically send
+  notifications via `modules/notify`. Wrapped by `modules/notify/scripts/run-and-notify.sh`. Disable
+  globally with `NOTIFY_SILENT=true`.
 - **Shared lib**: If scripts across modules share logic, extract to `scripts/lib/`

@@ -129,14 +129,15 @@ just notify::env
 
 ## Configuration (`config/.env`)
 
-| Variable                    | Required | Default                     | Description                               |
-| --------------------------- | -------- | --------------------------- | ----------------------------------------- |
-| `NOTIFY_TELEGRAM_BOT_TOKEN` | Yes*     | —                           | Telegram bot token from @BotFather        |
-| `NOTIFY_TELEGRAM_CHAT_ID`   | Yes*     | —                           | Recipient chat ID                         |
-| `NOTIFY_TELEGRAM_PROXY`     | No       | —                           | Proxy URL (e.g., `http://127.0.0.1:7890`) |
-| `NOTIFY_DEFAULT_CHANNEL`    | No       | `telegram`                  | Default channel(s), comma-separated       |
-| `NOTIFY_LOG_FILE`           | No       | `modules/notify/notify.log` | Audit log path                            |
-| `NOTIFY_TAIL_LINES`         | No       | `30`                        | Default output tail lines for `watch`     |
+| Variable                    | Required | Default                     | Description                                                     |
+| --------------------------- | -------- | --------------------------- | --------------------------------------------------------------- |
+| `NOTIFY_TELEGRAM_BOT_TOKEN` | Yes*     | —                           | Telegram bot token from @BotFather                              |
+| `NOTIFY_TELEGRAM_CHAT_ID`   | Yes*     | —                           | Recipient chat ID                                               |
+| `NOTIFY_TELEGRAM_PROXY`     | No       | —                           | Proxy URL (e.g., `http://127.0.0.1:7890`)                       |
+| `NOTIFY_DEFAULT_CHANNEL`    | No       | `telegram`                  | Default channel(s), comma-separated                             |
+| `NOTIFY_LOG_FILE`           | No       | `modules/notify/notify.log` | Audit log path                                                  |
+| `NOTIFY_TAIL_LINES`         | No       | `30`                        | Default output tail lines for `watch`                           |
+| `NOTIFY_SILENT`             | No       | `false`                     | Global switch: `true` disables all notifications (wrap & watch) |
 
 *Required only if using Telegram channel.
 

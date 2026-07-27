@@ -22,6 +22,7 @@ SCRIPT_DIR := MODULE_DIR / "scripts"
 DL_SCRIPT := SCRIPT_DIR / "dl.sh"
 GEN_SCRIPT := SCRIPT_DIR / "gen-index.ts"
 COOKIES_SCRIPT := SCRIPT_DIR / "cookies.sh"
+NOTIFY_WRAPPER := justfile_directory() / "modules" / "notify" / "scripts" / "run-and-notify.sh"
 
 # ── env ────────────────────────────────────────────────────
 
@@ -74,29 +75,29 @@ init:
 
 # ── download ───────────────────────────────────────────────
 
-# Download video + subtitles (default: ≤1080p)
+# Download video + subtitles (default: ≤1080p, with notification)
 dl url:
-    @{{ DL_SCRIPT }} "{{ url }}"
+    @bash '{{ NOTIFY_WRAPPER }}' "videodl::dl" {{ DL_SCRIPT }} "{{ url }}"
 
-# Download best quality (unlimited resolution)
+# Download best quality (unlimited resolution, with notification)
 dl-best url:
-    @{{ DL_SCRIPT }} --best "{{ url }}"
+    @bash '{{ NOTIFY_WRAPPER }}' "videodl::dl-best" {{ DL_SCRIPT }} --best "{{ url }}"
 
-# Download audio only
+# Download audio only (with notification)
 dl-audio url:
-    @{{ DL_SCRIPT }} --audio "{{ url }}"
+    @bash '{{ NOTIFY_WRAPPER }}' "videodl::dl-audio" {{ DL_SCRIPT }} --audio "{{ url }}"
 
-# Download subtitles only
+# Download subtitles only (with notification)
 dl-sub-only url:
-    @{{ DL_SCRIPT }} --sub-only "{{ url }}"
+    @bash '{{ NOTIFY_WRAPPER }}' "videodl::dl-sub-only" {{ DL_SCRIPT }} --sub-only "{{ url }}"
 
-# Download with custom format
+# Download with custom format (with notification)
 dl-with-format format url:
-    @{{ DL_SCRIPT }} --format "{{ format }}" "{{ url }}"
+    @bash '{{ NOTIFY_WRAPPER }}' "videodl::dl-with-format" {{ DL_SCRIPT }} --format "{{ format }}" "{{ url }}"
 
-# Download with browser cookies (extracts cookies every time)
+# Download with browser cookies (with notification)
 dl-cookie url:
-    @COOKIES_FROM=chrome {{ DL_SCRIPT }} "{{ url }}"
+    @bash '{{ NOTIFY_WRAPPER }}' "videodl::dl-cookie" env COOKIES_FROM=chrome {{ DL_SCRIPT }} "{{ url }}"
 
 # ── info ───────────────────────────────────────────────────
 

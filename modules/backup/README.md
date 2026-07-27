@@ -36,6 +36,21 @@ just backup::list                    # find snapshot IDs
 just backup::check           # verify repo integrity
 ```
 
+## Configuration
+
+All variables go in `config/.env`:
+
+| Variable            | Required | Default  | Description                                     |
+| ------------------- | -------- | -------- | ----------------------------------------------- |
+| `RESTIC_PASSWORD`   | Yes      | —        | Repository encryption password                  |
+| `RESTIC_REPOSITORY` | Yes      | —        | Repo URL (`sftp:`, `s3:`, `b2:`, or local path) |
+| `BACKUP_SOURCE_DIR` | Yes      | —        | Space-separated path(s) to back up              |
+| `BACKUP_TAG`        | Yes      | —        | Snapshot tag for identification and retention   |
+| `HOSTNAME`          | Yes      | —        | Machine identifier tag (shared global)          |
+| `BACKUP_PARENT`     | No       | _(none)_ | `cd` here first so restic stores relative paths |
+
+See `config/.env.example` for backend-specific examples (S3, B2, etc.).
+
 ## Tagging
 
 Every snapshot is tagged with:
@@ -56,6 +71,18 @@ Every snapshot is tagged with:
 
 `just backup::run` applies this automatically after each backup. Use `just backup::forget-dry-run`
 to preview before actual cleanup.
+
+## Notifications
+
+`just backup::run` sends a Telegram notification on completion with runtime duration and
+success/failure status.
+
+| Result  | Example message                                     |
+| ------- | --------------------------------------------------- |
+| Success | `✅ backup::run succeeded (took: 2m15s)`            |
+| Failure | `❌ backup::run failed (took: 0m45s, exit code: 2)` |
+
+Disable globally: `NOTIFY_SILENT=true` in `config/.env`.
 
 ## Paths
 
