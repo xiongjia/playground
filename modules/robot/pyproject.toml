@@ -1,0 +1,8 @@
+[project]
+name = "robot-tools"
+version = "0.1.0"
+description = "Desktop automation tools (anti-sleep, clicker, etc.)"
+requires-python = ">=3.12"
+dependencies = [
+    "pyautogui>=0.9,<1",
+]
