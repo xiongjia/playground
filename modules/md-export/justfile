@@ -23,6 +23,7 @@ TEMPLATE_DIR := MODULE_DIR / "templates"
 
 # Root project directory
 ROOT_DIR := justfile_directory()
+NOTIFY_WRAPPER := justfile_directory() / "modules" / "notify" / "scripts" / "run-and-notify.sh"
 
 # ── env ────────────────────────────────────────────────────
 
@@ -86,21 +87,37 @@ convert-epub +files:
 convert-epub-toc +files:
     @cd {{ ROOT_DIR }} && export MD_EXPORT_FORMATS=epub && bash {{ SCRIPT_DIR }}/convert.sh --toc {{ files }}
 
-# Convert all discoverable .md files to PDF (no TOC)
+# Convert all discoverable .md files to PDF (no TOC, with notification)
 convert-all:
-    @cd {{ ROOT_DIR }} && export MD_EXPORT_FORMATS=pdf && bash {{ SCRIPT_DIR }}/discover.sh | bash {{ SCRIPT_DIR }}/convert.sh
+    @bash '{{ NOTIFY_WRAPPER }}' "md-export::convert-all" sh -c '\
+        cd {{ ROOT_DIR }} && \
+        export MD_EXPORT_FORMATS=pdf && \
+        bash {{ SCRIPT_DIR }}/discover.sh | bash {{ SCRIPT_DIR }}/convert.sh\
+    '
 
-# Convert all discoverable .md files to PDF (with TOC)
+# Convert all discoverable .md files to PDF (with TOC, with notification)
 convert-all-toc:
-    @cd {{ ROOT_DIR }} && export MD_EXPORT_FORMATS=pdf && bash {{ SCRIPT_DIR }}/discover.sh | bash {{ SCRIPT_DIR }}/convert.sh --toc
+    @bash '{{ NOTIFY_WRAPPER }}' "md-export::convert-all-toc" sh -c '\
+        cd {{ ROOT_DIR }} && \
+        export MD_EXPORT_FORMATS=pdf && \
+        bash {{ SCRIPT_DIR }}/discover.sh | bash {{ SCRIPT_DIR }}/convert.sh --toc\
+    '
 
-# Convert all discoverable .md files to DOCX (no TOC)
+# Convert all discoverable .md files to DOCX (no TOC, with notification)
 convert-all-docx:
-    @cd {{ ROOT_DIR }} && export MD_EXPORT_FORMATS=docx && bash {{ SCRIPT_DIR }}/discover.sh | bash {{ SCRIPT_DIR }}/convert.sh
+    @bash '{{ NOTIFY_WRAPPER }}' "md-export::convert-all-docx" sh -c '\
+        cd {{ ROOT_DIR }} && \
+        export MD_EXPORT_FORMATS=docx && \
+        bash {{ SCRIPT_DIR }}/discover.sh | bash {{ SCRIPT_DIR }}/convert.sh\
+    '
 
-# Convert all discoverable .md files to EPUB (no TOC)
+# Convert all discoverable .md files to EPUB (no TOC, with notification)
 convert-all-epub:
-    @cd {{ ROOT_DIR }} && export MD_EXPORT_FORMATS=epub && bash {{ SCRIPT_DIR }}/discover.sh | bash {{ SCRIPT_DIR }}/convert.sh
+    @bash '{{ NOTIFY_WRAPPER }}' "md-export::convert-all-epub" sh -c '\
+        cd {{ ROOT_DIR }} && \
+        export MD_EXPORT_FORMATS=epub && \
+        bash {{ SCRIPT_DIR }}/discover.sh | bash {{ SCRIPT_DIR }}/convert.sh\
+    '
 
 # ── cleanup ───────────────────────────────────────────────
 

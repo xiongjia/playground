@@ -2,14 +2,14 @@
 
 ## Modules
 
-| Module      | Description                                 | Commands                                                                              |
-| ----------- | ------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `backup`    | encrypted incremental backup                | `just backup::run`, `just backup::list`, ...                                          |
-| `videodl`   | yt-dlp video & subtitle mgr                 | `just videodl::dl <url>`, `just videodl::serve`, `just videodl::dl-cookie <url>`, ... |
-| `notify`    | notification CLI                            | `just notify::send "msg"`, `just notify::watch "cmd"`, `just notify::log list`, ...   |
-| `finance`   | beancount + fava ledger toolkit (read-only) | `just finance::check`, `just finance::query <expr>`, `just finance::serve`, ...       |
-| `robot`     | desktop automation (anti-sleep, clicker)    | `just robot::setup`, `just robot::anti-sleep`, ...                                    |
-| `md-export` | markdown → PDF/EPUB/DOCX exporter           | `just md-export::convert README.md`, `just md-export::convert-all`, ...               |
+| Module      | Description                                  | Commands                                                                              |
+| ----------- | -------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `backup`    | encrypted incremental backup                 | `just backup::run`, `just backup::list`, ...                                          |
+| `videodl`   | yt-dlp video & subtitle mgr                  | `just videodl::dl <url>`, `just videodl::serve`, `just videodl::dl-cookie <url>`, ... |
+| `notify`    | notification CLI + automatic command wrapper | `just notify::send "msg"`, `just notify::watch "cmd"`, `just notify::log list`, ...   |
+| `finance`   | beancount + fava ledger toolkit (read-only)  | `just finance::check`, `just finance::query <expr>`, `just finance::serve`, ...       |
+| `robot`     | desktop automation (anti-sleep, clicker)     | `just robot::setup`, `just robot::anti-sleep`, ...                                    |
+| `md-export` | markdown → PDF/EPUB/DOCX exporter            | `just md-export::convert README.md`, `just md-export::convert-all`, ...               |
 
 See `modules/<name>/README.md` for module-specific usage.
 
@@ -50,6 +50,9 @@ just videodl::list "https://..."               # list available formats/subtitle
 just notify::send "Backup done" --level success
 just notify::watch "long-task.sh"
 just notify::log status
+
+Long-running commands (backup::run, videodl::dl, md-export::convert-all) send automatic
+notifications on completion. Disable globally: `NOTIFY_SILENT=true` in `config/.env`.
 
 # finance
 just finance::setup           # install dependencies (first use)

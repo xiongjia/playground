@@ -81,6 +81,10 @@ cp config/.env.example config/.env
 | `clean`                      | Remove all exported files                    |
 | `browse`                     | Open export directory in Finder              |
 
+> **Notifications**: `convert-all` / `convert-all-toc` / `convert-all-docx` / `convert-all-epub`
+> send a Telegram notification on completion with runtime duration. Disable globally:
+> `NOTIFY_SILENT=true` in `config/.env`.
+
 ## Examples
 
 ```bash

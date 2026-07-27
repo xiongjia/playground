@@ -286,15 +286,39 @@ just videodl::gen-index
 just videodl::serve   # → http://localhost:8080
 ```
 
-## 6. Future Extensions
+## 6. Notifications
+
+Download commands automatically send a notification on completion via `modules/notify`.
+
+**Affected commands:**
+
+- `videodl::dl <url>`
+- `videodl::dl-best <url>`
+- `videodl::dl-audio <url>`
+- `videodl::dl-cookie <url>`
+- `videodl::dl-with-format <f> <url>`
+
+**Notification behavior:**
+
+| Trigger          | Channel           | Message                                                    |
+| ---------------- | ----------------- | ---------------------------------------------------------- |
+| Download success | Telegram / Stdout | `✅ videodl::dl succeeded (took: 3m45s · [download] 100%)` |
+| Download failure | Telegram / Stdout | `❌ videodl::dl failed (took: 1m20s, exit code: 2)`        |
+
+**Control:**
+
+- `NOTIFY_SILENT=true` in `config/.env` — disable all notifications globally
+
+---
+
+## 7. Future Extensions
 
 - **Scheduled sync**: `just videodl::sync-cron` — periodic channel update checks
 - **Subscription management**: `subscriptions.txt` — maintain channel/playlist URL list
 - **Transcoding**: Post-download conversion (e.g., HEVC for space saving)
-- **Notifications**: macOS Notification / Feishu / Slack on download complete
 - **Metadata tagging**: Write filesystem tags based on `info.json`
 
-## 7. Conventions Checklist
+## 8. Conventions Checklist
 
 | Convention                            | Status                                                |
 | ------------------------------------- | ----------------------------------------------------- |

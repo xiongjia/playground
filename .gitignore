@@ -12,6 +12,9 @@
 # ─── drafts / planning notes (any dir) ──────────────────────
 *-draft.md
 
+# ─── temp files (notification wrapper) ───────────────────
+.tmp/
+
 # ─── OS ─────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db

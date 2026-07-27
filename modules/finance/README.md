@@ -12,18 +12,13 @@ Beancount + Fava toolchain for personal finance management.
 
 ## Configuration
 
-Set the following in `config/.env` (see `config/.env.example`):
+All variables go in `config/.env`:
 
-```env
-# Path to your main.beancount (MUST be outside this repo — sensitive data)
-FINANCE_BEANCOUNT_FILE=/path/to/your/main.beancount
-
-# Fava server port (optional, default 5500)
-FINANCE_FAVA_PORT=5500
-
-# Proxy for uv package downloads (optional)
-# FINANCE_PROXY=http://127.0.0.1:7890
-```
+| Variable                 | Required | Default | Description                                              |
+| ------------------------ | -------- | ------- | -------------------------------------------------------- |
+| `FINANCE_BEANCOUNT_FILE` | Yes      | —       | Path to `main.beancount` (must be **outside** this repo) |
+| `FINANCE_FAVA_PORT`      | No       | `5500`  | Fava web UI port                                         |
+| `FINANCE_PROXY`          | No       | —       | Proxy for uv package downloads                           |
 
 > ⚠️ **Security**: Ledger files contain sensitive financial data. **Do not store them inside this
 > repository.** All `just finance::*` commands are **read-only** — they never modify your ledger.

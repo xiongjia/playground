@@ -21,21 +21,16 @@ Controlling the mouse requires accessibility permissions:
 
 ## Configuration
 
-Set the following in `config/.env` (see `config/.env.example`):
+All variables go in `config/.env`:
 
-```env
-# Anti-sleep interval range (seconds), randomly chosen each cycle
-# ROBOT_ANTI_SLEEP_INTERVAL=30-90
+| Variable                          | Required | Default | Description                                                       |
+| --------------------------------- | -------- | ------- | ----------------------------------------------------------------- |
+| `ROBOT_ANTI_SLEEP_INTERVAL`       | No       | `30-90` | Interval range in seconds (`min-max`), randomly chosen each cycle |
+| `ROBOT_ANTI_SLEEP_MAX_MOVE`       | No       | `5`     | Max pixels to move per nudge                                      |
+| `ROBOT_ANTI_SLEEP_USER_THRESHOLD` | No       | `20`    | Pixel distance threshold to detect user activity                  |
 
-# Max pixels to move per nudge
-# ROBOT_ANTI_SLEEP_MAX_MOVE=5
-
-# Distance threshold to detect user activity (pixels)
-# ROBOT_ANTI_SLEEP_USER_THRESHOLD=20
-```
-
-> **Troubleshooting**: If `just robot::setup` fails to download packages (network restrictions), set
-> `HTTP_PROXY=http://127.0.0.1:1095` before the command. uv respects standard proxy env vars.
+If `just robot::setup` fails to download packages (network restrictions), set
+`HTTP_PROXY=http://127.0.0.1:1095` before the command. uv respects standard proxy env vars.
 
 ## Commands
 

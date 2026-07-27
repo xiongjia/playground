@@ -103,7 +103,7 @@ font-family: "Songti SC", "Hiragino Mincho ProN", "Noto Serif CJK SC", serif;
 ### Why not PingFang SC?
 
 First attempt used `PingFang SC` but some PDF viewers (Preview on macOS) failed to render it.
-`Songti SC` (宋体) is a serif font that works reliably across all viewers.
+`Songti SC` is a serif font that works reliably across all viewers.
 
 ---
 
@@ -197,12 +197,38 @@ pipes (inline `VAR=val cmd1 | cmd2` only affects cmd1).
 
 ---
 
-## 9. Limitations & Future Work
+## 10. Notifications
+
+Batch export commands automatically send a notification on completion via `modules/notify`.
+
+**Affected commands:**
+
+- `md-export::convert-all`
+- `md-export::convert-all-toc`
+- `md-export::convert-all-docx`
+- `md-export::convert-all-epub`
+
+Single-file `convert <file>` does not send notification (typically fast).
+
+**Notification behavior:**
+
+| Trigger        | Channel           | Message                                                                            |
+| -------------- | ----------------- | ---------------------------------------------------------------------------------- |
+| Export success | Telegram / Stdout | `✅ md-export::convert-all succeeded (took: 1m23s · ✅ Done: 14 file(s) exported)` |
+| Export failure | Telegram / Stdout | `❌ md-export::convert-all failed (took: 0m45s, exit code: 2)`                     |
+
+**Control:**
+
+- `NOTIFY_SILENT=true` in `config/.env` — disable all notifications globally
+
+---
+
+## 11. Limitations & Future Work
 
 - **Chinese font rendering** — relies on macOS system fonts; Linux users must install
   `fonts-noto-cjk`
 - **Image paths** — relative image paths in markdown may break if the source file is outside the
   project root (not an issue for this repo, which has no markdown images)
-- **Internal anchor links** — `#1-基础入门--创建地图` style anchors produce "No anchor" warnings
-  from pandoc; these are cosmetic and don't affect rendering
+- **Internal anchor links** — anchors like `#getting-started--create-a-map` produce "No anchor"
+  warnings from pandoc; these are cosmetic and don't affect rendering
 - **No PDF/A compliance** — generated PDFs are standard 1.7, not PDF/A
