@@ -8,6 +8,7 @@
 | `videodl` | yt-dlp video & subtitle mgr                 | `just videodl::dl <url>`, `just videodl::serve`, `just videodl::dl-cookie <url>`, ... |
 | `notify`  | notification CLI                            | `just notify::send "msg"`, `just notify::watch "cmd"`, `just notify::log list`, ...   |
 | `finance` | beancount + fava ledger toolkit (read-only) | `just finance::check`, `just finance::query <expr>`, `just finance::serve`, ...       |
+| `robot`   | desktop automation (anti-sleep, clicker)    | `just robot::setup`, `just robot::anti-sleep`, ...                                    |
 
 See `modules/<name>/README.md` for module-specific usage.
 
@@ -35,10 +36,12 @@ just backup::run           # daily backup
 
 # videodl
 just videodl::init
-just videodl::cookies
-just videodl::dl "https://..."
+just videodl::cookies                         # pre-export cookies (no password prompt)
+just videodl::dl "https://..."                 # download with exported cookies
+just videodl::dl-cookie "https://..."          # download with live browser cookies
 just videodl::gen-index
-just videodl::serve        # http://localhost:8080
+just videodl::serve                            # http://localhost:8080
+just videodl::list "https://..."               # list available formats/subtitles
 
 # notify
 just notify::send "Backup done" --level success
@@ -50,6 +53,10 @@ just finance::setup           # install dependencies (first use)
 just finance::check           # validate ledger
 just finance::query "SELECT account, sum(position)"
 just finance::serve           # http://127.0.0.1:5500
+
+# robot
+just robot::setup             # install dependencies (first use)
+just robot::anti-sleep        # randomly nudges mouse every 30-90s to prevent sleep (Ctrl-C)
 ```
 
 ## Development

@@ -1,0 +1,36 @@
+# ─── robot module — desktop automation ────────────────────
+#
+# Prerequisites: uv (https://docs.astral.sh/uv/)
+#   brew install uv          # macOS
+#   pipx install uv          # via pipx
+#
+# Config: config/.env
+#   ROBOT_ANTI_SLEEP_INTERVAL     — interval range (default: 30-90)
+#   ROBOT_ANTI_SLEEP_MAX_MOVE     — max move pixels (default: 5)
+#   ROBOT_ANTI_SLEEP_USER_THRESHOLD — user-active threshold (default: 20)
+#
+# Usage:  just robot::<task>
+#   e.g.  just robot::setup         # install dependencies
+#         just robot::anti-sleep    # start anti-sleep daemon
+#         just robot::env           # show resolved config
+# ────────────────────────────────────────────────────────────
+
+MOD_DIR := justfile_directory() + "/modules/robot"
+
+# Install / update Python dependencies (run once after clone)
+setup:
+    @echo "📦 Installing robot dependencies ..." && \
+    uv sync --directory '{{ MOD_DIR }}' && \
+    echo "✓ Robot dependencies ready"
+
+# Start anti-sleep daemon — randomly nudges mouse every 30-90s (Ctrl-C to stop)
+anti-sleep:
+    @echo "🛌 Starting anti-sleep ..." && \
+    uv run --directory '{{ MOD_DIR }}' python scripts/anti_sleep.py
+
+# Show resolved robot environment
+env:
+    @echo "═══ robot module environment ═══" && \
+    echo "ROBOT_ANTI_SLEEP_INTERVAL       = ${ROBOT_ANTI_SLEEP_INTERVAL:-30-90}" && \
+    echo "ROBOT_ANTI_SLEEP_MAX_MOVE       = ${ROBOT_ANTI_SLEEP_MAX_MOVE:-5}" && \
+    echo "ROBOT_ANTI_SLEEP_USER_THRESHOLD = ${ROBOT_ANTI_SLEEP_USER_THRESHOLD:-20}"

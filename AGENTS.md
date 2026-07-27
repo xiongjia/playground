@@ -40,6 +40,7 @@ Rust tools in `src/bin/`. Build: `just build` (all, release), `just build-debug`
 - `modules/videodl/README.md` — yt-dlp video & subtitle manager
 - `modules/notify/README.md` — notification CLI (Telegram, watch, audit log)
 - `modules/finance/README.md` — beancount + fava ledger toolkit (read-only)
+- `modules/robot/README.md` — desktop automation (anti-sleep, clicker, etc.)
 
 Module recipes use `::` separator (e.g. `just backup::run`). Run `just --list` for all.
 
@@ -49,6 +50,9 @@ Module recipes use `::` separator (e.g. `just backup::run`). Run `just --list` f
 2. `mod <name> "modules/<name>"` in root `justfile`
 3. Env vars in `config/.env.example`
 4. `docs/<name>-design.md` for nontrivial design
+5. Verify `.gitignore` covers module artifacts (`.venv/`, `uv.lock`, `__pycache__/` — global rules
+   usually cover them)
+6. Update root `README.md` Modules table + Quick Start
 
 ## Agents
 
