@@ -1,0 +1,127 @@
+# ─── md-export — Markdown document exporter ────────────────
+#
+# Prerequisites:
+#   pandoc 3+    — brew install pandoc
+#   weasyprint   — brew install weasyprint (PDF engine, no LaTeX needed)
+#
+# Config: config/.env + config/.env.dev.local (loaded by root justfile)
+#   MD_EXPORT_ROOT        — export output directory (required)
+#   MD_EXPORT_FORMATS     — formats, comma-separated (default: pdf)
+#   MD_EXPORT_PDF_FONT    — PDF body font (default: Songti SC)
+#   MD_EXPORT_PDF_ENGINE  — PDF engine (default: weasyprint)
+#   MD_EXPORT_EXCLUDE     — space-separated filename patterns to exclude
+#
+# Usage:  just md-export::<task>
+#   e.g.  just md-export::convert README.md
+#         just md-export::convert-all
+#         just md-export::convert-toc README.md
+# ────────────────────────────────────────────────────────────
+
+MODULE_DIR := justfile_directory() / "modules" / "md-export"
+SCRIPT_DIR := MODULE_DIR / "scripts"
+TEMPLATE_DIR := MODULE_DIR / "templates"
+
+# Root project directory
+ROOT_DIR := justfile_directory()
+
+# ── env ────────────────────────────────────────────────────
+
+# Show environment variables and tool versions
+env:
+    @echo "═══ md-export module environment ═══" && \
+    echo "MD_EXPORT_ROOT       = ${MD_EXPORT_ROOT:-(not set) ✗}" && \
+    echo "MD_EXPORT_FORMATS    = ${MD_EXPORT_FORMATS:-pdf} (default: pdf)" && \
+    echo "MD_EXPORT_PDF_FONT   = ${MD_EXPORT_PDF_FONT:-Songti SC}" && \
+    echo "MD_EXPORT_PDF_ENGINE = ${MD_EXPORT_PDF_ENGINE:-weasyprint}" && \
+    echo "MD_EXPORT_EXCLUDE    = ${MD_EXPORT_EXCLUDE:-(defaults)}" && \
+    echo "" && \
+    echo "═══ tools ═══" && \
+    echo "pandoc              = `pandoc --version 2>/dev/null | head -1 || echo 'not found'`" && \
+    echo "weasyprint          = `weasyprint --version 2>/dev/null || echo 'not found'`" && \
+    echo "" && \
+    if [ -z "${MD_EXPORT_ROOT:-}" ]; then \
+        echo "⚠ MD_EXPORT_ROOT not set. Set it in config/.env"; \
+    fi
+
+# ── list ──────────────────────────────────────────────────
+
+# List all discoverable markdown files
+list:
+    @cd {{ ROOT_DIR }} && bash {{ SCRIPT_DIR }}/discover.sh
+
+# List already exported files in MD_EXPORT_ROOT
+list-out:
+    @if [ -z "${MD_EXPORT_ROOT:-}" ]; then \
+        echo "✗ MD_EXPORT_ROOT not set"; exit 1; \
+    fi && \
+    if [ -d "$MD_EXPORT_ROOT" ]; then \
+        find "$MD_EXPORT_ROOT" -type f | sort; \
+    else \
+        echo "(empty — no exports yet)"; \
+    fi
+
+# ── convert ───────────────────────────────────────────────
+
+# Convert specified .md file(s) to PDF (no TOC)
+convert +files:
+    @cd {{ ROOT_DIR }} && export MD_EXPORT_FORMATS=pdf && bash {{ SCRIPT_DIR }}/convert.sh {{ files }}
+
+# Convert specified .md file(s) to PDF (with TOC)
+convert-toc +files:
+    @cd {{ ROOT_DIR }} && export MD_EXPORT_FORMATS=pdf && bash {{ SCRIPT_DIR }}/convert.sh --toc {{ files }}
+
+# Convert specified .md file(s) to DOCX (no TOC)
+convert-docx +files:
+    @cd {{ ROOT_DIR }} && export MD_EXPORT_FORMATS=docx && bash {{ SCRIPT_DIR }}/convert.sh {{ files }}
+
+# Convert specified .md file(s) to DOCX (with TOC)
+convert-docx-toc +files:
+    @cd {{ ROOT_DIR }} && export MD_EXPORT_FORMATS=docx && bash {{ SCRIPT_DIR }}/convert.sh --toc {{ files }}
+
+# Convert specified .md file(s) to EPUB (no TOC)
+convert-epub +files:
+    @cd {{ ROOT_DIR }} && export MD_EXPORT_FORMATS=epub && bash {{ SCRIPT_DIR }}/convert.sh {{ files }}
+
+# Convert specified .md file(s) to EPUB (with TOC)
+convert-epub-toc +files:
+    @cd {{ ROOT_DIR }} && export MD_EXPORT_FORMATS=epub && bash {{ SCRIPT_DIR }}/convert.sh --toc {{ files }}
+
+# Convert all discoverable .md files to PDF (no TOC)
+convert-all:
+    @cd {{ ROOT_DIR }} && export MD_EXPORT_FORMATS=pdf && bash {{ SCRIPT_DIR }}/discover.sh | bash {{ SCRIPT_DIR }}/convert.sh
+
+# Convert all discoverable .md files to PDF (with TOC)
+convert-all-toc:
+    @cd {{ ROOT_DIR }} && export MD_EXPORT_FORMATS=pdf && bash {{ SCRIPT_DIR }}/discover.sh | bash {{ SCRIPT_DIR }}/convert.sh --toc
+
+# Convert all discoverable .md files to DOCX (no TOC)
+convert-all-docx:
+    @cd {{ ROOT_DIR }} && export MD_EXPORT_FORMATS=docx && bash {{ SCRIPT_DIR }}/discover.sh | bash {{ SCRIPT_DIR }}/convert.sh
+
+# Convert all discoverable .md files to EPUB (no TOC)
+convert-all-epub:
+    @cd {{ ROOT_DIR }} && export MD_EXPORT_FORMATS=epub && bash {{ SCRIPT_DIR }}/discover.sh | bash {{ SCRIPT_DIR }}/convert.sh
+
+# ── cleanup ───────────────────────────────────────────────
+
+# Remove all exported files
+clean:
+    @if [ -z "${MD_EXPORT_ROOT:-}" ]; then \
+        echo "✗ MD_EXPORT_ROOT not set"; exit 1; \
+    fi && \
+    echo "🧹 Cleaning $MD_EXPORT_ROOT ..." && \
+    if [ -d "$MD_EXPORT_ROOT" ]; then \
+        rm -rf "$MD_EXPORT_ROOT/pdf" "$MD_EXPORT_ROOT/epub" "$MD_EXPORT_ROOT/docx" 2>/dev/null && \
+        echo "  ✓ Removed pdf/ epub/ docx/"; \
+    fi && \
+    echo "✅ Clean complete"
+
+# ── browse ───────────────────────────────────────────────
+
+# Open export directory in Finder
+browse:
+    @if [ -z "${MD_EXPORT_ROOT:-}" ]; then \
+        echo "✗ MD_EXPORT_ROOT not set"; exit 1; \
+    fi && \
+    mkdir -p "$MD_EXPORT_ROOT" && \
+    open "$MD_EXPORT_ROOT"

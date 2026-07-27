@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$lang$">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <title>$title$</title>
+  <style>
+    body {
+      font-family: "Songti SC", "Hiragino Mincho ProN", "Noto Serif CJK SC", serif;
+      line-height: 1.8;
+      margin: 2.5cm 2cm;
+      color: #333;
+    }
+    code {
+      font-family: "SF Mono", Menlo, Consolas, "STSong", monospace;
+      font-size: 0.9em;
+      background: #f4f4f4;
+      padding: 0.15em 0.3em;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 1em;
+      border: 1px solid #ddd;
+      line-height: 1.4;
+    }
+    pre code { background: none; padding: 0; }
+    table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+    th, td { border: 1px solid #ccc; padding: 0.5em; text-align: left; }
+    th { background: #f0f0f0; }
+    img { max-width: 100%; }
+    h1, h2, h3 { margin-top: 1.5em; margin-bottom: 0.5em; }
+    a { color: #0366d6; }
+    blockquote { border-left: 4px solid #ddd; margin-left: 0; padding-left: 1em; color: #666; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 2em 0; }
+  </style>
+</head>
+<body>
+$for(include-before)$
+$include-before$
+$endfor$
+
+$if(title)$
+<h1 class="title">$title$</h1>
+$endif$
+$if(date)$
+<p class="date">$date$</p>
+$endif$
+
+$if(toc)$
+<nav id="$idprefix$TOC" role="doc-toc">
+  $table-of-contents$
+</nav>
+$endif$
+
+$body$
+
+$for(include-after)$
+$include-after$
+$endfor$
+</body>
+</html>

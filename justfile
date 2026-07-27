@@ -9,6 +9,7 @@ mod videodl "modules/videodl"
 mod notify "modules/notify"
 mod finance "modules/finance"
 mod robot "modules/robot"
+mod md-export "modules/md-export"
 
 # Build profile: 'release' (default) or 'debug'
 # Override:  profile=debug just build
@@ -71,6 +72,7 @@ fmt:
     just --fmt --justfile modules/notify/justfile
     just --fmt --justfile modules/finance/justfile
     just --fmt --justfile modules/robot/justfile
+    just --fmt --justfile modules/md-export/justfile
     dprint fmt
 
 # Check formatting (CI use)
@@ -80,4 +82,5 @@ fmt-check:
     just --fmt --check --justfile modules/notify/justfile
     just --fmt --check --justfile modules/finance/justfile
     just --fmt --check --justfile modules/robot/justfile
+    just --fmt --check --justfile modules/md-export/justfile
     dprint check

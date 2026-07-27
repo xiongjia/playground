@@ -22,14 +22,16 @@ Modular personal automation repo. Each module in `modules/<name>/` has its own `
 
 ## Tech Stack
 
-| Tool            | Lang   | Use                                       |
-| --------------- | ------ | ----------------------------------------- |
-| `just`          | Rust   | Task runner                               |
-| `dprint`        | Rust   | Formatter (md, json, ts)                  |
-| `uv`            | Rust   | Python package manager (finance module)   |
-| `yt-dlp`        | Python | Video download (CLI only, user-managed)   |
-| `notify`        | Rust   | Notification CLI (Telegram, watch, audit) |
-| `static-server` | Rust   | HTTP file server                          |
+| Tool            | Lang    | Use                                       |
+| --------------- | ------- | ----------------------------------------- |
+| `just`          | Rust    | Task runner                               |
+| `dprint`        | Rust    | Formatter (md, json, ts)                  |
+| `uv`            | Rust    | Python package manager (finance module)   |
+| `yt-dlp`        | Python  | Video download (CLI only, user-managed)   |
+| `notify`        | Rust    | Notification CLI (Telegram, watch, audit) |
+| `static-server` | Rust    | HTTP file server                          |
+| `pandoc`        | Haskell | Markdown → PDF/EPUB/DOCX converter        |
+| `weasyprint`    | Python  | PDF rendering engine                      |
 
 Rust tools in `src/bin/`. Build: `just build` (all, release), `just build-debug` (all, debug),
 `just build-notify` (one).
@@ -41,6 +43,7 @@ Rust tools in `src/bin/`. Build: `just build` (all, release), `just build-debug`
 - `modules/notify/README.md` — notification CLI (Telegram, watch, audit log)
 - `modules/finance/README.md` — beancount + fava ledger toolkit (read-only)
 - `modules/robot/README.md` — desktop automation (anti-sleep, clicker, etc.)
+- `modules/md-export/README.md` — markdown → PDF/EPUB/DOCX exporter
 
 Module recipes use `::` separator (e.g. `just backup::run`). Run `just --list` for all.
 

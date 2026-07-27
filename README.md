@@ -2,13 +2,14 @@
 
 ## Modules
 
-| Module    | Description                                 | Commands                                                                              |
-| --------- | ------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `backup`  | encrypted incremental backup                | `just backup::run`, `just backup::list`, ...                                          |
-| `videodl` | yt-dlp video & subtitle mgr                 | `just videodl::dl <url>`, `just videodl::serve`, `just videodl::dl-cookie <url>`, ... |
-| `notify`  | notification CLI                            | `just notify::send "msg"`, `just notify::watch "cmd"`, `just notify::log list`, ...   |
-| `finance` | beancount + fava ledger toolkit (read-only) | `just finance::check`, `just finance::query <expr>`, `just finance::serve`, ...       |
-| `robot`   | desktop automation (anti-sleep, clicker)    | `just robot::setup`, `just robot::anti-sleep`, ...                                    |
+| Module      | Description                                 | Commands                                                                              |
+| ----------- | ------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `backup`    | encrypted incremental backup                | `just backup::run`, `just backup::list`, ...                                          |
+| `videodl`   | yt-dlp video & subtitle mgr                 | `just videodl::dl <url>`, `just videodl::serve`, `just videodl::dl-cookie <url>`, ... |
+| `notify`    | notification CLI                            | `just notify::send "msg"`, `just notify::watch "cmd"`, `just notify::log list`, ...   |
+| `finance`   | beancount + fava ledger toolkit (read-only) | `just finance::check`, `just finance::query <expr>`, `just finance::serve`, ...       |
+| `robot`     | desktop automation (anti-sleep, clicker)    | `just robot::setup`, `just robot::anti-sleep`, ...                                    |
+| `md-export` | markdown → PDF/EPUB/DOCX exporter           | `just md-export::convert README.md`, `just md-export::convert-all`, ...               |
 
 See `modules/<name>/README.md` for module-specific usage.
 
@@ -23,6 +24,8 @@ See `modules/<name>/README.md` for module-specific usage.
 | `uv`            | >= 0.4                 | [docs.astral.sh/uv](https://docs.astral.sh/uv/getting-started/installation/) |
 | `restic`        | latest                 | [restic.net](https://restic.net)                                             |
 | `yt-dlp`        | latest                 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   |
+| `pandoc`        | latest                 | [pandoc.org](https://pandoc.org)                                             |
+| `weasyprint`    | latest                 | [weasyprint.org](https://weasyprint.org)                                     |
 | `notify`        | in `src/bin/`          | `just build-notify` / `just notify::build`                                   |
 | `static-server` | in `src/bin/`          | `just build-static-server` / `just videodl::build`                           |
 
@@ -57,6 +60,14 @@ just finance::serve           # http://127.0.0.1:5500
 # robot
 just robot::setup             # install dependencies (first use)
 just robot::anti-sleep        # randomly nudges mouse every 30-90s to prevent sleep (Ctrl-C)
+
+# md-export
+just md-export::convert README.md                # single file to PDF
+just md-export::convert-all                      # batch convert all .md files
+just md-export::convert-all-toc                  # batch convert with table of contents
+just md-export::convert-docx README.md           # to DOCX
+just md-export::convert-epub README.md           # to EPUB
+just md-export::browse                          # open exports in Finder
 ```
 
 ## Development
