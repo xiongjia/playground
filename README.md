@@ -10,6 +10,7 @@
 | `finance`   | beancount + fava ledger toolkit (read-only)  | `just finance::check`, `just finance::query <expr>`, `just finance::serve`, ...       |
 | `robot`     | desktop automation (anti-sleep, clicker)     | `just robot::setup`, `just robot::anti-sleep`, ...                                    |
 | `md-export` | markdown → PDF/EPUB/DOCX exporter            | `just md-export::convert README.md`, `just md-export::convert-all`, ...               |
+| `dns`       | on-demand local DNS (CoreDNS, *.home.arpa)   | `just dns::up`, `just dns::down`, `just dns::status`, ...                             |
 
 See `modules/<name>/README.md` for module-specific usage.
 
@@ -26,6 +27,7 @@ See `modules/<name>/README.md` for module-specific usage.
 | `yt-dlp`        | latest                 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   |
 | `pandoc`        | latest                 | [pandoc.org](https://pandoc.org)                                             |
 | `weasyprint`    | latest                 | [weasyprint.org](https://weasyprint.org)                                     |
+| `coredns`       | latest                 | `brew install coredns`                                                       |
 | `notify`        | in `src/bin/`          | `just build-notify` / `just notify::build`                                   |
 | `static-server` | in `src/bin/`          | `just build-static-server` / `just videodl::build`                           |
 
@@ -71,6 +73,16 @@ just md-export::convert-all-toc                  # batch convert with table of c
 just md-export::convert-docx README.md           # to DOCX
 just md-export::convert-epub README.md           # to EPUB
 just md-export::browse                          # open exports in Finder
+
+# dns (on-demand local DNS for *.home.arpa)
+# one-time manual setup first (see modules/dns/README.md):
+#   brew install coredns
+#   sudo tee /etc/resolver/home.arpa (→ 127.0.0.1:5363) + flush DNS cache
+# then, in config/.env: DNS_ENABLED=true and DNS_RECORDS="vm001=192.168.71.10,vm001.tailXXXX.ts.net"
+just dns::init-config       # sync DNS_RECORDS → config/records
+just dns::up                # pick IPs per current network + start CoreDNS
+just dns::status            # process / records / live probe
+just dns::down              # stop CoreDNS
 ```
 
 ## Development

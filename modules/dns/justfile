@@ -1,0 +1,94 @@
+# ─── dns module — on-demand local DNS (CoreDNS) ────────────
+#
+# Temporarily resolves private *.home.arpa names for THIS machine:
+#   home LAN   → 192.168.x direct
+#   away       → tailscale 100.x (or a MagicDNS ts.net name)
+# Started on demand (`just dns::up`), stopped with `just dns::down`.
+# Normally nothing runs and normal DNS is untouched.
+#
+# Prerequisites (one-time, manual — see README "One-time setup"):
+#   brew install coredns
+#   sudo create /etc/resolver/<DNS_DOMAIN> → 127.0.0.1:5363, then flush DNS cache
+#
+# Config: config/.env (loaded by root justfile; DNS_RECORDS is the single source of truth)
+#   DNS_RECORDS  — "name=LAN[,TAIL] ..." mapping, e.g. "vm001=192.168.71.10,vm001.tailXXXX.ts.net"
+#   DNS_DOMAIN   — private TLD, default home.arpa (RFC 8375)
+#   DNS_PORT     — default 5363 (high port → no root for the daily start/stop)
+#   DNS_BIND_IP  — default 127.0.0.1 (keep loopback — open recursion risk otherwise)
+#   DNS_ENABLED  — safety switch; dns::up refuses unless true
+#
+# Usage:  just dns::<task>
+#   e.g.  just dns::init-config   # sync .env → config/records (idempotent)
+#         just dns::up            # sync + pick IPs + start coredns (background)
+#         just dns::run           # same, but foreground — Ctrl-C stops it
+#         just dns::status        # pid / records / live probe
+#         just dns::down          # stop coredns
+# ────────────────────────────────────────────────────────────
+
+MOD_DIR := justfile_directory() + "/modules/dns"
+
+# ── one-time / config ──────────────────────────────────────
+
+# Validate DNS_RECORDS from config/.env and sync it into config/records (idempotent)
+init-config:
+    @bash '{{ MOD_DIR }}/scripts/init-config.sh'
+
+# ── lifecycle ──────────────────────────────────────────────
+
+# Start: sync env → pick IPs per current network → launch coredns in background
+up:
+    @bash '{{ MOD_DIR }}/scripts/start.sh'
+
+# Start in the foreground: sync + pick IPs + run coredns attached; Ctrl-C to stop
+run:
+    @bash '{{ MOD_DIR }}/scripts/start.sh' --foreground
+
+# Stop coredns (idempotent)
+down:
+    @bash '{{ MOD_DIR }}/scripts/stop.sh'
+
+# Restart = down + up
+restart: down up
+
+# ── inspection ─────────────────────────────────────────────
+
+# Runtime status: process, A records, live dig probe
+status:
+    @bash '{{ MOD_DIR }}/scripts/status.sh'
+
+# Show resolved environment (read-only)
+env:
+    @echo "═══ dns module environment ═══" && \
+    echo "DNS_ENABLED   = ${DNS_ENABLED:-false}" && \
+    echo "DNS_DOMAIN    = ${DNS_DOMAIN:-home.arpa}" && \
+    echo "DNS_PORT      = ${DNS_PORT:-5363}" && \
+    echo "DNS_BIND_IP   = ${DNS_BIND_IP:-127.0.0.1}" && \
+    echo "DNS_UPSTREAM  = ${DNS_UPSTREAM:-223.5.5.5}" && \
+    echo "DNS_LAN_PROBE = ${DNS_LAN_PROBE:-(not set)}" && \
+    echo "DNS_GOMAXPROCS = ${DNS_GOMAXPROCS:-(not set; coredns uses all cores)}" && \
+    echo "DNS_BIN       = ${DNS_BIN:-coredns}" && \
+    echo "DNS_RECORDS   = ${DNS_RECORDS:-(not set)}" && \
+    echo "" && \
+    echo "── network facts ──" && \
+    bash '{{ MOD_DIR }}/scripts/detect-net.sh'
+
+# Read-only prerequisite check (binary, /etc/resolver, records, network)
+doctor:
+    @bash '{{ MOD_DIR }}/scripts/doctor.sh'; test $$? -eq 0
+
+# Show the current hostname mapping (candidates from config/records + effective A records)
+list:
+    @if [ -f '{{ MOD_DIR }}/config/records' ]; then \
+        echo "records (source: DNS_RECORDS in config/.env):" && \
+        awk -F '\t' '{ printf "   %-34s lan=%-20s tail=%-22s alias=%s\n", $1, $2, $3, $4 }' '{{ MOD_DIR }}/config/records' && \
+        if [ -f '{{ MOD_DIR }}/config/hosts.db' ]; then \
+            echo "" && echo "effective A records (last dns::up):" && \
+            awk '{ printf "   %-34s %s\n", $2, $1 }' '{{ MOD_DIR }}/config/hosts.db'; \
+        fi; \
+    else \
+        echo "no config/records yet — run: just dns::init-config"; \
+    fi
+
+# Tail coredns logs (-f to follow)
+log:
+    @tail -f '{{ MOD_DIR }}/config/coredns.log'
