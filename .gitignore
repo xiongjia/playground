@@ -60,3 +60,7 @@ uv.lock
 
 # Beancount ledger files (sensitive financial data, must stay outside repo)
 *.beancount
+
+# ─── dns ─────────────────────────────────────
+# runtime files generated from config/.env (records, hosts.db, Corefile, pid, log)
+modules/dns/config/
